@@ -2,16 +2,15 @@
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
-public class PlayerMovement : NetworkBehaviour 
+public class PlayerMovement : Photon.MonoBehaviour 
 {
     [SerializeField]private float speedMultiplier = 2.0f;
     private Rigidbody2D rigid;
     private BoxCollider2D collider;
     private Vector2 movement;
 
-    public override void OnStartLocalPlayer()
+    private void Start()
     {
-        this.transform.position = new Vector2(-8, 0);
         this.rigid = this.GetComponent<Rigidbody2D>();
         this.rigid.gravityScale = 0;
 
@@ -22,14 +21,14 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Update()
     {
-        if (!isLocalPlayer)
+        if (!photonView.isMine)
             return;
         movement = new Vector2(0, Input.GetAxis("Vertical"));
     }
 
     private void FixedUpdate()
     {
-        if (!isLocalPlayer)
+        if (!photonView.isMine)
             return;
         
         Vector2 Velocity = movement.normalized * speedMultiplier * Time.deltaTime;
